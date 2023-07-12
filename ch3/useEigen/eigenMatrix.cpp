@@ -2,6 +2,7 @@
 
 using namespace std;
 
+// C++标准库中的头文件，包含了与时间相关的函数和类型的声明
 #include <ctime>
 // Eigen 核心部分
 #include <Eigen/Core>
@@ -25,8 +26,7 @@ int main(int argc, char **argv) {
   // 例如 Vector3d 实质上是 Eigen::Matrix<double, 3, 1>，即三维向量
   Vector3d v_3d;
   // 这是一样的
-  Matrix<float, 3, 1> vd_3d;
-
+  Matrix<float, 3, 1> vd_3d;  
   // Matrix3d 实质上是 Eigen::Matrix<double, 3, 3>
   Matrix3d matrix_33 = Matrix3d::Zero(); //初始化为零
   // 如果不确定矩阵大小，可以使用动态大小的矩阵
@@ -55,8 +55,11 @@ int main(int argc, char **argv) {
   // 但是在Eigen里你不能混合两种不同类型的矩阵，像这样是错的
   // Matrix<double, 2, 1> result_wrong_type = matrix_23 * v_3d;
   // 应该显式转换
+  // matrix_23为float，v_3d为double，Eigen不支持自动类型转换，需手动
+  // cast<double>()将矩阵的元素类型转化为double
   Matrix<double, 2, 1> result = matrix_23.cast<double>() * v_3d;
   cout << "[1,2,3;4,5,6]*[3,2,1]=" << result.transpose() << endl;
+  // transpose()获取矩阵的转置
 
   Matrix<float, 2, 1> result2 = matrix_23 * vd_3d;
   cout << "[1,2,3;4,5,6]*[4,5,6]: " << result2.transpose() << endl;
@@ -71,16 +74,18 @@ int main(int argc, char **argv) {
   cout << "random matrix: \n" << matrix_33 << endl;
   cout << "transpose: \n" << matrix_33.transpose() << endl;      // 转置
   cout << "sum: " << matrix_33.sum() << endl;            // 各元素和
-  cout << "trace: " << matrix_33.trace() << endl;          // 迹
+  cout << "trace: " << matrix_33.trace() << endl;          // 迹(主对角线上元素的和)
   cout << "times 10: \n" << 10 * matrix_33 << endl;               // 数乘
   cout << "inverse: \n" << matrix_33.inverse() << endl;        // 逆
   cout << "det: " << matrix_33.determinant() << endl;    // 行列式
 
   // 特征值
   // 实对称矩阵可以保证对角化成功
-  SelfAdjointEigenSolver<Matrix3d> eigen_solver(matrix_33.transpose() * matrix_33);
-  cout << "Eigen values = \n" << eigen_solver.eigenvalues() << endl;
-  cout << "Eigen vectors = \n" << eigen_solver.eigenvectors() << endl;
+  // SelfAdjoint(自伴随矩阵，对称矩阵)
+  // SelfAdjointEigenSolver 类提供了求解自伴随矩阵特征值和特征向量的功能。它可以用于对对称矩阵进行特征值分解。
+  SelfAdjointEigenSolver<Matrix3d> eigen_solver(matrix_33.transpose() * matrix_33);  //A*AT为对称矩阵
+  cout << "Eigen values = \n" << eigen_solver.eigenvalues() << endl;  // 特征值
+  cout << "Eigen vectors = \n" << eigen_solver.eigenvectors() << endl;  // 特征向量
 
   // 解方程
   // 我们求解 matrix_NN * x = v_Nd 这个方程
