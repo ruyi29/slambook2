@@ -102,6 +102,8 @@ int main(int argc, char **argv) {
   Matrix<double, MATRIX_SIZE, 1> x = matrix_NN.inverse() * v_Nd;
   cout << "time of normal inverse is "
        << 1000 * (clock() - time_stt) / (double) CLOCKS_PER_SEC << "ms" << endl;
+  // CLOCKS_PER_SEC 是 C/C++ 库中的一个宏定义，表示每秒钟的时钟周期数。
+  // 在计算代码执行时间时应该将 clock() 返回的时钟周期数除以CLOCKS_PER_SEC才能得到以秒为单位的时间值。 
   cout << "x = " << x.transpose() << endl;
 
   // 通常用矩阵分解来求，例如QR分解，速度会快很多
